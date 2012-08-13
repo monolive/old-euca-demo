@@ -1,0 +1,8 @@
+name 'puppetlabs-nagios'
+version '0.0.1'
+source 'git@github.com:puppetlabs/puppetlabs-nagios.git'
+author 'puppetlabs'
+license 'Apache License, Version 2.0'
+summary 'nagios types, formerly part of the puppet core'
+description 'Manages nagios, formerly part of the puppet core'
+project_page 'http://forge.puppetlabs.com/puppetlabs/nagios'

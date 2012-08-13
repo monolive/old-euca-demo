@@ -1,0 +1,37 @@
+{
+  "project_page": "http://github.com/glarizza/puppet-haproxy",
+  "checksums": {
+    "spec/spec_helper.rb": "bb913214d4d25456471c5f4fbff304f7",
+    "templates/haproxy_config_block.erb": "ad7e799caeee1562a5b3bdccdae704ef",
+    "spec/fixtures/manifests/site.pp": "d41d8cd98f00b204e9800998ecf8427e",
+    "templates/haproxy_balancermember.erb": "dd1cc7af6380b4acd6009cb6973af308",
+    "README": "dfe0ed57fa1f831b72b30ef1babe3e05",
+    "Rakefile": "94e63c348c6fef38826ea757df9cadec",
+    "manifests/config.pp": "9d24aaf10380087ebea5ef219e19c528",
+    "tests/init.pp": "df0114a1b07ecaad7afa67b595220e45",
+    "templates/haproxy-base.cfg.erb": "af984afd9c954cf5b902eab041adb902",
+    "spec/defines/config_spec.rb": "27d6f56e782b293178a6a602510de68a",
+    "spec/classes/haproxy_spec.rb": "f4211e7360a00cb48b6a1bfa17e24a5c",
+    "spec/defines/balancermember_spec.rb": "e96d30276abce95e5ce3e1188e93c626",
+    "manifests/data.pp": "3a3d0e2caa5c632d30fabe53bdfd4630",
+    "Modulefile": "290580a7a0946141629029f4090bf9a4",
+    "manifests/init.pp": "f597dade271a3f242840ab780dfda259",
+    "manifests/balancermember.pp": "a83fd130bb61bb477c0b9333c21a8f80"
+  },
+  "description": "An Haproxy module for Redhat family OSes using Storeconfigs",
+  "summary": "Haproxy Module",
+  "source": "git://github.com/glarizza/puppet-haproxy",
+  "types": [
+
+  ],
+  "dependencies": [
+    {
+      "version_requirement": ">= 0.1.0",
+      "name": "ripienaar/concat"
+    }
+  ],
+  "author": "Puppet Labs",
+  "version": "0.0.2",
+  "name": "puppet-haproxy",
+  "license": "Apache License, Version 2.0"
+}

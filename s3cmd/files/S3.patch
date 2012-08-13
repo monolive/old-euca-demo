@@ -1,0 +1,108 @@
+diff -rupN S3/Config.py S3.new/Config.py
+--- S3/Config.py	2010-12-23 08:57:42.000000000 -0500
++++ S3.new/Config.py	2012-07-27 16:06:16.000000000 -0400
+@@ -17,7 +17,8 @@ class Config(object):
+ 	secret_key = ""
+ 	host_base = "s3.amazonaws.com"
+ 	host_bucket = "%(bucket)s.s3.amazonaws.com"
+-	simpledb_host = "sdb.amazonaws.com"
++	service_path = ""
++        simpledb_host = "sdb.amazonaws.com"
+ 	cloudfront_host = "cloudfront.amazonaws.com"
+ 	cloudfront_resource = "/2010-07-15/distribution"
+ 	verbosity = logging.WARNING
+diff -rupN S3/S3.py S3.new/S3.py
+--- S3/S3.py	2010-10-24 08:17:22.000000000 -0400
++++ S3.new/S3.py	2012-07-27 16:06:16.000000000 -0400
+@@ -43,6 +43,8 @@ class S3Request(object):
+ 		if self.headers.has_key("date"):
+ 			del(self.headers["date"])
+ 		self.headers["x-amz-date"] = time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
++    
++                
+ 
+ 	def format_param_str(self):
+ 		"""
+@@ -67,8 +69,8 @@ class S3Request(object):
+ 		for header in self.headers.keys():
+ 			if header.startswith("x-amz-"):
+ 				h += header+":"+str(self.headers[header])+"\n"
+-		if self.resource['bucket']:
+-			h += "/" + self.resource['bucket']
++	#	if self.resource['bucket']:
++	#		h += "/" + self.resource['bucket']
+ 		h += self.resource['uri']
+ 		debug("SignHeaders: " + repr(h))
+ 		signature = sign_string(h)
+@@ -443,12 +445,16 @@ class S3(object):
+ 			object = uri.has_object() and uri.object() or None
+ 
+ 		if bucket:
+-			resource['bucket'] = str(bucket)
++			#resource['bucket'] = str(bucket)
++                        resource['uri'] = "/" + self.urlencode_string(bucket) 
+ 			if object:
+-				resource['uri'] = "/" + self.urlencode_string(object)
++				#resource['uri'] = "/" + self.urlencode_string(object)
++                                resource['uri'] = resource['uri'] + "/" + self.urlencode_string(object)
+ 		if extra:
+ 			resource['uri'] += extra
+-
++                if self.config.service_path:
++                        resource['uri'] = self.config.service_path + resource['uri']
++                          
+ 		method_string = S3.http_methods.getkey(S3.operations[operation] & S3.http_methods["MASK"])
+ 
+ 		request = S3Request(self, method_string, resource, headers, params)
+diff -rupN S3/Utils.py S3.new/Utils.py
+--- S3/Utils.py	2010-07-07 08:16:28.000000000 -0400
++++ S3.new/Utils.py	2012-07-27 16:06:16.000000000 -0400
+@@ -4,16 +4,12 @@
+ ## License: GPL Version 2
+ 
+ import os
++import sys
+ import time
+ import re
+ import string
+ import random
+ import rfc822
+-try:
+-	from hashlib import md5, sha1
+-except ImportError:
+-	from md5 import md5
+-	import sha as sha1
+ import hmac
+ import base64
+ import errno
+@@ -23,6 +19,13 @@ from logging import debug, info, warning
+ import Config
+ import Exceptions
+ 
++# hashlib backported to python 2.4 / 2.5 is not compatible with hmac!
++if sys.version_info[0] == 2 and sys.version_info[1] < 6:
++	from md5 import md5
++	import sha as sha1
++else:
++	from hashlib import md5, sha1
++
+ try:
+ 	import xml.etree.ElementTree as ET
+ except ImportError:
+@@ -51,10 +54,13 @@ def stripNameSpace(xml):
+ 	"""
+ 	removeNameSpace(xml) -- remove top-level AWS namespace
+ 	"""
+-	r = re.compile('^(<?[^>]+?>\s?)(<\w+) xmlns=[\'"](http://[^\'"]+)[\'"](.*)', re.MULTILINE)
+-	if r.match(xml):
++	#r = re.compile('.*?xmlns=[\'"](http:.*?)[\'"]')
++	#r = re.compile('(.|\n)*?(<\w+) xmlns=[\'"](http:.*?)[\'"]', re.MULTILINE)
++        #r = re.compile('(<\w+) xmlns=[\'"](http://[^\'"]+)[\'"](.*)', re.MULTILINE)
++        r = re.compile('^(<?[^>]+?>\s?)?(<\w+) xmlns=[\'"](http://[^\'"]+)[\'"](.*)', re.MULTILINE)
++        if r.match(xml):
+ 		xmlns = r.match(xml).groups()[2]
+-		xml = r.sub("\\1\\2\\4", xml)
++		xml = r.sub("\\2\\4", xml)
+ 	else:
+ 		xmlns = None
+ 	return xml, xmlns

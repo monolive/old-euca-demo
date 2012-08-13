@@ -1,0 +1,25 @@
+--- s3cmd	2011-01-09 04:32:40.000000000 -0500
++++ s3cmd.new	2012-07-27 16:16:36.000000000 -0400
+@@ -166,12 +166,20 @@
+ 		format_string = u"%(timestamp)16s %(size)9s%(coeff)1s  %(uri)s"
+ 
+ 	for prefix in response['common_prefixes']:
+-		output(format_string % {
++	        try:
++                # S3 often has / as prefix at minimum
++                    prefixprefix = prefix["Prefix"]
++                except KeyError:
++                  # Eucalyptus often has an empty prefix which doesn't
++                  # parse, it puts thins in "Directory" instead
++                    prefixprefix = ""  
++            	output(format_string % {
+ 			"timestamp": "",
+ 			"size": "DIR",
+ 			"coeff": "",
+ 			"md5": "",
+-			"uri": uri.compose_uri(bucket, prefix["Prefix"])})
++			#"uri": uri.compose_uri(bucket, prefix["Prefix"])})
++			"uri": uri.compose_uri(bucket, prefixprefix)})
+ 
+ 	for object in response["list"]:
+ 		size, size_coeff = formatSize(object["Size"], Config().human_readable_sizes)
