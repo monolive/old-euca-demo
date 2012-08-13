@@ -1,11 +1,10 @@
 class local-repo {
-   file { "local-repo":
-	path => "/etc/yum.repos.d/local.repo",
-	ensure => file,
-	owner => root,
-	group => root,
-	mode => 644,
-	source => "puppet:///modules/local-repo/local.repo",
+   yumrepo { "local":
+        descr    => "Local Yum Repository",
+	baseurl  => "http://puppet/pub/local",
+	enabled  => 1,
+	gpgcheck => 0,
+	name     => "local",
    }
 }
 

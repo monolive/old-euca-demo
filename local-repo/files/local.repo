@@ -1,6 +1,0 @@
-[local]
-name=Local SW for Enterprise Linux 6 - $basearch
-baseurl=http://puppet/pub/local
-enabled=1
-gpgcheck=0
-

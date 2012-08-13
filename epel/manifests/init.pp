@@ -1,19 +1,12 @@
 class epel {
-   file { "epel":
-	path => "/etc/yum.repos.d/epel.repo",
-	ensure => file,
-	owner => root,
-	group => root,
-	mode => 644,
-	source => "puppet:///modules/epel/epel.repo",
-   }
-   file { "epel-pki":
-        path => "/etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6",
-        ensure => file,
-        owner => root,
-        group => root,
-        mode => 644,
-        source => "puppet:///modules/epel/RPM-GPG-KEY-EPEL-6",
+   yumrepo { "epel":
+	name       => "epel",
+ 	#baseurl    => "http://download.fedoraproject.org/pub/epel/6/\$basearch",
+	mirrorlist => "https://mirrors.fedoraproject.org/metalink?repo=epel-6&arch=\$basearch",
+	descr      => "Extra Packages for Enterprise Linux 6 - \$basearch",
+	gpgkey     => "https://fedoraproject.org/static/0608B895.txt",
+	gpgcheck   => 1,
+	enabled    => 1,
    }
 }
 

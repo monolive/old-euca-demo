@@ -1,5 +1,5 @@
 class truth::enforcer {
-   include ntp, prereq
+   include ntp, prereq, collectd
    $groupname = "$company_platform:$company_role"
    case $groupname {
       "USA:Web" : {
@@ -47,7 +47,7 @@ class truth::enforcer {
    }       
    case $company_role {
       "web-server" : {
-         include http, s3cmd, zenphoto, webcollectd
+         include http, s3cmd, zenphoto
 #         motd::register {"http":}
          @@haproxy::balancermember { $fqdn:
             order                  => '21',
